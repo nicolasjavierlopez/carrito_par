@@ -7,40 +7,34 @@ package com.carrito.controller;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import javax.sql.DataSource;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.sql.DataSource;
 
-
-/**
- *
- * @author lopez
- */
 public class Conexion {
-    private String USERNAME = "postgres";
-    private String PASSWORD = "pass";
-    public Conexion(){
     
+    public Conexion(){
+        
     }
     
     public static Connection getConexion()throws SQLException, ClassNotFoundException, NamingException, Exception{
         Connection conexion = null;
         InitialContext cxt = new InitialContext();
-        
         if ( cxt == null ) {
             throw new Exception("Uh oh -- no context!");
         }
-        
-        DataSource ds = (DataSource) cxt.lookup("java:/comp/env/jdbc/postgres");
 
+        DataSource ds = (DataSource) cxt.lookup( "jdbc/postgres" );
+        
         if ( ds == null ) {
             throw new Exception("Data source not found!");
         }
-        else {
-            System.out.println("funciono la conexion");
-        }
-        conexion = ds.getConnection("postgres","pass");
+        conexion = ds.getConnection();
         return conexion;
     }
     
+    public static void closeConexion(Connection conexion)throws SQLException, ClassNotFoundException{
+        conexion.close();
+    }
+     
 }
